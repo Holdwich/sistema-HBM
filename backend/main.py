@@ -18,3 +18,7 @@ app.add_middleware(
 app.include_router(measurements.router)
 app.include_router(irregularities.router)
 app.include_router(simulation.router)
+
+@app.get("/")
+async def redirect_to_docs():
+    return ({"message": "Acesse a documentação em /docs"})
