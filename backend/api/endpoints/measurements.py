@@ -11,11 +11,13 @@ from models.measurement import Measurement
 router = APIRouter(prefix="/api", tags=["Medições"])
 
 @router.post("/measurements")
-def add_measurement(measurement: MeasurementRequest, db: Session = Depends(get_db)):
+def add_measurement(device_id: str = Query(...), time_ms: int = Query(...), value: float = Query(...), db: Session = Depends(get_db)):
     """Adiciona uma medição ao banco de dados e processa a irregularidade se necessário.
 
     Args:
-        measurement (MeasurementRequest): A medição a ser adicionada
+        device_id (str): O ID do dispositivo que fez a medição,
+        time_ms (int): O tempo em milissegundos da medição,
+        value (float): O valor da medição
 
     Returns:
         list[]: A medição adicionada, e uma mensagem de alerta, se houver
@@ -26,9 +28,9 @@ def add_measurement(measurement: MeasurementRequest, db: Session = Depends(get_d
     service = MeasurementService(measurement_repo, irregularity_repo)
 
     # Processa a medição (incluindo verificação de irregularidades)
-    result = service.process_measurement(measurement.device_id, measurement.time_ms, measurement.value)
+    result = service.process_measurement(device_id, time_ms, value)
 
-    return {"device_id" : measurement.device_id, "time_ms": measurement.time_ms, "value": measurement.value, "alert": result["alert"]}
+    return {"device_id" : device_id, "time_ms": time_ms, "value": value, "alert": result["alert"]}
 
 @router.get("/measurements/history", response_model=list[MeasurementResponse])
 def get_history(device_id: str = Query(...), db: Session = Depends(get_db)):
