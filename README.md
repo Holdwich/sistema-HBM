@@ -21,6 +21,7 @@ O projeto é dividido em duas pastas principais:
 	+ `repos`: Contém os repositórios de dados, que acessam o banco de dados.
 	+ `schemas`: Contém as definições de validação de dados e respostas utilizadas na API.
 	+ `services`: Contém arquivos de serviço (no caso, um único, MeasurementService, resposável por aplicar as regras de negócio relacionadas às medições).
+    + `tests`: Contém testes automatizados para a aplicação.
     + `utils`: Funções auxiliares.
 
 ## Documentação da API
