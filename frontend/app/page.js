@@ -2,6 +2,12 @@
 import { useState } from 'react';
 import { registerMeasurement, simulateMeasurements, getMeasurementsHistory, getIrregularities } from '../services/api';
 
+/**
+ * Página principal do simulador HBM+.
+ *
+ * Contém os formulários para simular medições e exibir o histórico de medições
+ * e irregularidades detectadas.
+ */
 export default function Home() {
   const [deviceId, setDeviceId] = useState('');
   const [mode, setMode] = useState('normal');
@@ -13,6 +19,19 @@ export default function Home() {
   const [irregularities, setIrregularities] = useState([]);
   const [error, setError] = useState('');
 
+  /**
+   * Registra uma medição para o dispositivo com o ID informado,
+   * com o valor e intervalo informados.
+   *
+   * Verifica se o ID do dispositivo foi informado, se o valor
+   *   personalizado é válido e se o intervalo é um valor válido.
+   * Se houver algum erro, coloca o erro na variável de estado
+   * "error" e retorna sem fazer nada.
+   *
+   * Se não houver erros, registra a medição e coloca o resultado
+   * na variável de estado "result".
+   */
+  
   const handleRegisterMeasurement = async () => {
     setError('');
     if (!deviceId) {
@@ -22,6 +41,13 @@ export default function Home() {
     if (value < 0) {
       setError('Informe um valor personalizado válido.');
       return;
+    }
+    if (intervalMs < 0) {
+      setError('Informe um valor de intervalo válido.');
+      return;
+    }
+    if (intervalMs > 100) {
+      setError('A medida atual tem um intervalo maior que 100ms, a medida pode não ser apropriada.');
     }
     setIrregularities([]);
     setHistory([]);
@@ -39,11 +65,33 @@ export default function Home() {
     }
   }
 
+  /**
+   * Simula medições para o dispositivo com o ID informado, no modo e quantidade especificados.
+   *
+   * Verifica se o ID do dispositivo foi informado, se a quantidade de medidas
+   * e o intervalo são válidos. Se houver algum erro, coloca o erro na variável
+   * de estado "error" e retorna sem fazer nada.
+   *
+   * Se não houver erros, realiza a simulação das medições e coloca o resultado
+   * na variável de estado "result".
+   */
+
   const handleSimulate = async () => {
     setError('');
     if (!deviceId) {
       setError('Informe o ID do dispositivo.');
       return;
+    }
+    if (count < 0) {
+      setError('Informe uma quantidade de medidas válida.');
+      return;
+    }
+    if (intervalMs < 0) {
+      setError('Informe um valor de intervalo válido.');
+      return;
+    }
+    if (intervalMs > 100) {
+      setError('A medida atual tem um intervalo maior que 100ms, as medidas podem não ser apropriadas.');
     }
     setIrregularities([]);
     setHistory([]);
@@ -61,6 +109,17 @@ export default function Home() {
     }
   };
 
+  /**
+   * Busca o histórico de medições do dispositivo com o ID informado e salva na variável de estado "history".
+   *
+   * Verifica se o ID do dispositivo foi informado. Se não foi, coloca o erro na variável de estado "error"
+   * e retorna sem fazer nada.
+   *
+   * Se o ID do dispositivo for válido, busca o histórico de medições do dispositivo com o ID informado
+   * e salva na variável de estado "history".
+   *
+   * Se houver algum erro, coloca o erro na variável de estado "error".
+   */
   const fetchHistory = async () => {
     setError('');
     if (!deviceId) {
@@ -78,6 +137,17 @@ export default function Home() {
     }
   };
 
+  /**
+   * Busca as irregularidades do dispositivo com o ID informado e salva na variável de estado "irregularities".
+   *
+   * Verifica se o ID do dispositivo foi informado. Se não foi, coloca o erro na variável de estado "error"
+   * e retorna sem fazer nada.
+   *
+   * Se o ID do dispositivo for válido, busca as irregularidades do dispositivo com o ID informado
+   * e salva na variável de estado "irregularities".
+   *
+   * Se houver algum erro, coloca o erro na variável de estado "error".
+   */
   const fetchIrregularities = async () => {
     setError('');
     if (!deviceId) {
@@ -215,10 +285,10 @@ export default function Home() {
         <p>Para usar o simulador, siga as instruções abaixo:</p>
         <ol>
           <li>Insira o ID do dispositivo no campo apropriado.</li>
-          <li>Escolha o modo de simulação entre Normal, Anormal ou Misto.</li>
+          <li>Escolha o modo de simulação entre Normal (Todos os valores são baseline), Anormal (Todos os valores são diferentes da baseline com um desvio de 30%) ou Misto.</li>
           <li>Defina o número de medições desejado (N).</li>
           <li>Se necessário, insira um valor de medição personalizado (Aplicável somente para medição única).</li>
-          <li>Determine o intervalo de tempo das medições em milissegundos.</li>
+          <li>Determine o intervalo das medições em milissegundos.</li>
           <li>Clique em "Simular Medição Individual" para uma medição única ou "Simular Mediçōes" para múltiplas medições com os parâmetros especificados.</li>
           <li>Use os botões apropriados para visualizar o histórico de medições (últimos 30 dias) ou irregularidades detectadas.</li>
         </ol>
