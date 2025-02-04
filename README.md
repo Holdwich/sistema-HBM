@@ -1,11 +1,31 @@
 # Simulador HBM+
 
-O Simulador HBM+ é um projeto de demonstração de um sistema de monitoramento de medições de um dispositivo médico.
+O Simulador HBM+ é um projeto de demonstração de um sistema de monitoramento de medições de um dispositivo médico, este que não possui memória interna, e é dependente de um sistema externo (no caso, a API).
 
 O projeto consiste em uma aplicação web dividida em dois componentes principais:
 
 1. **Frontend**: Uma interface de usuário para simular medições e exibir o histórico de medições e irregularidades detectadas. O frontend é escrito em Next.js.
 2. **Backend**: Uma API que fornece os dados de medição e irregularidades detectadas. A API é escrita em FastAPI e utiliza o banco de dados especificado na variável de ambiente `DATABASE_URL` (pode ser trocado por via da variável desta, deve ser compatível com SQLAlchemy).
+
+## Estrutura do Projeto
+
+O projeto é dividido em duas pastas principais:
+
+* `frontend`:
+	+ `app`: Contém a aplicação Next.js, com a sua única página.
+	+ `services`: Contém arquivos de serviço (no caso, um único, API, resposável por comunicar com o servidor).
+* `backend`:
+	+ `api`: Contém a API FastAPI, com as rotas de endpoint, e o gerenciador de sessão.
+    + `core`: Contém os arquivos para o bom funcionamento da API (Configurações, Conexão da DB).
+	+ `models`: Contém os modelos de dados utilizados na API.
+	+ `repos`: Contém os repositórios de dados, que acessam o banco de dados.
+	+ `schemas`: Contém as definições de validação de dados e respostas utilizadas na API.
+	+ `services`: Contém arquivos de serviço (no caso, um único, MeasurementService, resposável por aplicar as regras de negócio relacionadas às medições).
+    + `utils`: Funções auxiliares.
+
+## Documentação da API
+
+Além de cada função estar documentada no código fonte, é possível acessar a documentação da API com o Swagger através do endpoint `/docs`, onde também é possível interagir com a API diretamente pelo navegador.
 
 ## Instalação
 
