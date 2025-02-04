@@ -8,12 +8,14 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Servidor HBM+")
 
-origins = ['*']
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
 
 app.include_router(measurements.router)
 app.include_router(irregularities.router)
