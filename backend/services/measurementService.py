@@ -70,6 +70,7 @@ class MeasurementService:
         measurement = Measurement(device_id=device_id, time_ms=time_ms, value=value)
         self.measurement_repo.create(measurement)
 
+        # Verifica as últimas 60 medições, verificando as medições anormais
         last_measurements = self.measurement_repo.get_last_n(device_id, 60)
         abnormal_count = 0
         for m in last_measurements:
@@ -80,6 +81,7 @@ class MeasurementService:
         alert = None
         active_irreg = self.irregularity_repo.get_active(device_id)
 
+        # Decide se envia 'bip' ou 'bipbip'
         if abnormal_count >= 5 and active_irreg is None:
             new_irreg = Irregularity(device_id=device_id, start_timestamp=datetime.datetime.now())
             self.irregularity_repo.create(new_irreg)
